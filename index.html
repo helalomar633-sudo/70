@@ -28,51 +28,47 @@
             margin: 0;
         }
 
-       .container {
-    background: rgba(30, 41, 59, 0.7);
-    backdrop-filter: blur(10px);
-    padding: 1.5rem 2rem; /* تقليل المسافات العلوية والسفلية */
-    border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 400px; /* تصغير العرض الأقصى قليلاً من 450 إلى 400 */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}        
+        .container {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         h1 {
-    text-align: center;
-    color: var(--primary);
-    font-size: 2.2rem; /* تصغير العنوان من 2.8 إلى 2.2 */
-    margin-bottom: 0.2rem;
-    font-weight: 800;
-}
+            text-align: center;
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 0.2rem;
+            font-weight: 800;
+        }
 
-.subtitle {
-    text-align: center;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem; /* تقليل المسافة أسفل النص الفرعي */
-    font-size: 0.85rem;
-}
+        .subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px; /* تقليل الفراغ بين الحقول من 18 إلى 12 */
-}
-
-input, select {
-    padding: 10px 14px; /* جعل الحقول أقل سماكة */
-    /* باقي التنسيقات كما هي */
-}
+        .form-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
         .form-toggle button {
             flex: 1;
-            background: none;
+            background: rgba(255,255,255,0.05);
             border: none;
             color: var(--text-dim);
             cursor: pointer;
-            font-size: 1rem;
-            padding: 12px;
-            border-radius: 10px;
+            font-size: 0.9rem;
+            padding: 10px;
+            border-radius: 12px;
             transition: 0.3s;
             font-weight: 600;
         }
@@ -86,79 +82,82 @@ input, select {
         form {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 12px;
         }
 
         .input-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
         }
 
         .input-group {
             position: relative;
-            width: 100%;
             display: flex;
             align-items: center;
         }
 
         input, select {
-            padding: 14px 18px;
+            padding: 12px 15px;
             border-radius: 12px;
             border: 2px solid transparent;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.8);
             color: white;
             outline: none;
             width: 100%;
             box-sizing: border-box;
             transition: 0.3s ease;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+        }
+
+        /* إضافة مساحة لزر "عرض" كلمة السر */
+        input[type="password"], input[type="text"] {
+            padding-left: 50px; 
         }
 
         input:focus, select:focus {
             border-color: var(--primary);
-            background: rgba(15, 23, 42, 0.8);
             box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
         }
 
-        /* تنسيق حقل الهاتف مع الكود */
         .phone-container {
             display: flex;
             gap: 8px;
-            direction: ltr; /* لجعل الكود على اليسار والرقم على اليمين بشكل منطقي تقنياً */
-        }
-        
-        .country-code {
-            width: 100px;
-            text-align: center;
-            padding: 14px 5px;
+            direction: ltr;
         }
 
-        /* زر إظهار كلمة السر */
+        .country-code {
+            width: 110px;
+            padding: 12px 5px;
+        }
+
         .toggle-password {
             position: absolute;
-            left: 15px; /* لأن الاتجاه RTL */
+            left: 10px;
             cursor: pointer;
-            color: var(--text-dim);
-            font-size: 0.8rem;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: bold;
             user-select: none;
             background: rgba(255,255,255,0.1);
             padding: 4px 8px;
             border-radius: 6px;
         }
 
-       button.main-btn {
-    padding: 12px; /* تقليل سماكة الزر */
-    font-size: 1rem;
-    margin-top: 5px;
-}
+        .main-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
 
-.form-toggle {
-    margin-bottom: 15px; /* تقليل المسافة تحت أزرار التبديل */
-}
-        button.main-btn:hover {
+        .main-btn:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 107, 0, 0.2);
         }
 
         .hidden { display: none; }
@@ -168,14 +167,8 @@ input, select {
             padding: 12px;
             border-radius: 10px;
             margin-top: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
 
         .msg-error { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid var(--error); }
@@ -223,8 +216,6 @@ input, select {
                 <option value="+20">🇪🇬 +20</option>
                 <option value="+966">🇸🇦 +966</option>
                 <option value="+971">🇦🇪 +971</option>
-                <option value="+965">🇰🇼 +965</option>
-                <option value="+1">🇺🇸 +1</option>
             </select>
             <input type="tel" placeholder="رقم التلفون" required id="phone" style="direction: rtl;">
         </div>
@@ -242,7 +233,6 @@ input, select {
             <select class="country-code" id="loginCountryCode">
                 <option value="+20">🇪🇬 +20</option>
                 <option value="+966">🇸🇦 +966</option>
-                <option value="+1">🇺🇸 +1</option>
             </select>
             <input type="tel" placeholder="رقم التلفون" required id="loginPhone" style="direction: rtl;">
         </div>
@@ -263,7 +253,6 @@ input, select {
     const loginForm = document.getElementById('loginForm');
     const msgDiv = document.getElementById('msg');
 
-    // وظيفة إظهار وإخفاء كلمة المرور
     function togglePass(id) {
         const input = document.getElementById(id);
         const btn = input.nextElementSibling;
@@ -306,9 +295,8 @@ input, select {
         e.preventDefault();
         const fullPhone = document.getElementById('countryCode').value + document.getElementById('phone').value;
         let users = JSON.parse(localStorage.getItem('burnup_users')) || [];
-        const userExists = users.some(user => user.phone === fullPhone);
-
-        if (userExists) {
+        
+        if (users.some(user => user.phone === fullPhone)) {
             displayMessage("عذراً، هذا الرقم مسجل من قبل!", "error");
         } else {
             const newUser = {
@@ -318,8 +306,8 @@ input, select {
             };
             users.push(newUser);
             localStorage.setItem('burnup_users', JSON.stringify(users));
-            displayMessage("تم إنشاء حسابك بنجاح! يمكنك الدخول الآن.", "success");
-            signupForm.reset();
+            displayMessage("تم إنشاء الحساب! يمكنك الدخول الآن.", "success");
+            setTimeout(showLogin, 1500); // تحويل المستخدم لصفحة الدخول بعد نجاح التسجيل
         }
     };
 
@@ -327,17 +315,16 @@ input, select {
         e.preventDefault();
         const fullPhone = document.getElementById('loginCountryCode').value + document.getElementById('loginPhone').value;
         const pass = document.getElementById('loginPassword').value;
-
         let users = JSON.parse(localStorage.getItem('burnup_users')) || [];
         const user = users.find(u => u.phone === fullPhone && u.password === pass);
 
         if (user) {
             displayMessage(`أهلاً بك يا ${user.firstName}، جاري توجيهك...`, "success");
+            // هنا يمكنك إضافة window.location.href لصفحة المستخدم
         } else {
             displayMessage("بيانات الدخول غير صحيحة.", "error");
         }
     };
 </script>
-
 </body>
 </html>
