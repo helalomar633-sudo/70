@@ -93,8 +93,11 @@
             gap: 12px;
         }
 
-        .field-wrapper {
+        .input-group {
+            position: relative;
             width: 100%;
+            display: flex;
+            align-items: center;
         }
 
         input, select {
@@ -114,6 +117,32 @@
             border-color: var(--primary);
             background: rgba(15, 23, 42, 0.8);
             box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
+        }
+
+        /* تنسيق حقل الهاتف مع الكود */
+        .phone-container {
+            display: flex;
+            gap: 8px;
+            direction: ltr; /* لجعل الكود على اليسار والرقم على اليمين بشكل منطقي تقنياً */
+        }
+        
+        .country-code {
+            width: 100px;
+            text-align: center;
+            padding: 14px 5px;
+        }
+
+        /* زر إظهار كلمة السر */
+        .toggle-password {
+            position: absolute;
+            left: 15px; /* لأن الاتجاه RTL */
+            cursor: pointer;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            user-select: none;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
         }
 
         button.main-btn {
@@ -172,25 +201,60 @@
             <input type="text" placeholder="الاسم الأول" required id="firstName">
             <input type="text" placeholder="الاسم الأخير" required id="lastName">
         </div>
-        <input type="text" placeholder="مكان التمرين (جيم / منزل)" required id="location">
+        
+        <select id="location" required>
+            <option value="" disabled selected>مكان التمرين المفصل</option>
+            <option value="gym">النادي الرياضي (Gym)</option>
+            <option value="home">المنزل (Home)</option>
+            <option value="outdoor">مساحة مفتوحة (Outdoor)</option>
+        </select>
+
         <select id="level" required>
             <option value="" disabled selected>مستوى اللياقة</option>
             <option value="beginner">مبتدئ</option>
             <option value="intermediate">متوسط</option>
             <option value="advanced">محترف</option>
         </select>
+
         <div class="input-row">
             <input type="number" placeholder="الطول (سم)" required id="height">
             <input type="number" placeholder="الوزن (كجم)" required id="weight">
         </div>
-        <input type="tel" placeholder="رقم التلفون" required id="phone">
-        <input type="password" placeholder="كلمة السر" required id="password">
+
+        <div class="phone-container">
+            <select class="country-code" id="countryCode">
+                <option value="+20">🇪🇬 +20</option>
+                <option value="+966">🇸🇦 +966</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+965">🇰🇼 +965</option>
+                <option value="+1">🇺🇸 +1</option>
+            </select>
+            <input type="tel" placeholder="رقم التلفون" required id="phone" style="direction: rtl;">
+        </div>
+
+        <div class="input-group">
+            <input type="password" placeholder="كلمة السر" required id="password">
+            <span class="toggle-password" onclick="togglePass('password')">عرض</span>
+        </div>
+
         <button type="submit" class="main-btn">ابدأ رحلتك الآن</button>
     </form>
 
     <form id="loginForm" class="hidden">
-        <input type="tel" placeholder="رقم التلفون" required id="loginPhone">
-        <input type="password" placeholder="كلمة السر" required id="loginPassword">
+        <div class="phone-container">
+            <select class="country-code" id="loginCountryCode">
+                <option value="+20">🇪🇬 +20</option>
+                <option value="+966">🇸🇦 +966</option>
+                <option value="+1">🇺🇸 +1</option>
+            </select>
+            <input type="tel" placeholder="رقم التلفون" required id="loginPhone" style="direction: rtl;">
+        </div>
+        
+        <div class="input-group">
+            <input type="password" placeholder="كلمة السر" required id="loginPassword">
+            <span class="toggle-password" onclick="togglePass('loginPassword')">عرض</span>
+        </div>
+        
         <button type="submit" class="main-btn">دخول</button>
     </form>
 
@@ -202,7 +266,19 @@
     const loginForm = document.getElementById('loginForm');
     const msgDiv = document.getElementById('msg');
 
-    // وظائف التبديل
+    // وظيفة إظهار وإخفاء كلمة المرور
+    function togglePass(id) {
+        const input = document.getElementById(id);
+        const btn = input.nextElementSibling;
+        if (input.type === "password") {
+            input.type = "text";
+            btn.innerText = "إخفاء";
+        } else {
+            input.type = "password";
+            btn.innerText = "عرض";
+        }
+    }
+
     function showLogin() {
         signupForm.classList.add('hidden');
         loginForm.classList.remove('hidden');
@@ -221,7 +297,6 @@
 
     function hideMsg() {
         msgDiv.style.display = 'none';
-        msgDiv.className = 'message';
     }
 
     function displayMessage(text, type) {
@@ -230,48 +305,39 @@
         msgDiv.className = 'message ' + (type === 'error' ? 'msg-error' : 'msg-success');
     }
 
-    // منطق التسجيل والتحقق
     signupForm.onsubmit = (e) => {
         e.preventDefault();
-        
-        const phone = document.getElementById('phone').value;
-        
-        // جلب المستخدمين المخزنين (أو مصفوفة فارغة)
+        const fullPhone = document.getElementById('countryCode').value + document.getElementById('phone').value;
         let users = JSON.parse(localStorage.getItem('burnup_users')) || [];
-
-        // التحقق من وجود الرقم
-        const userExists = users.some(user => user.phone === phone);
+        const userExists = users.some(user => user.phone === fullPhone);
 
         if (userExists) {
             displayMessage("عذراً، هذا الرقم مسجل من قبل!", "error");
         } else {
-            // إضافة المستخدم الجديد
             const newUser = {
                 firstName: document.getElementById('firstName').value,
-                phone: phone,
+                phone: fullPhone,
                 password: document.getElementById('password').value
             };
             users.push(newUser);
             localStorage.setItem('burnup_users', JSON.stringify(users));
-
-            displayMessage("تم إنشاء حسابك بنجاح في BurnUp! يمكنك الدخول الآن.", "success");
+            displayMessage("تم إنشاء حسابك بنجاح! يمكنك الدخول الآن.", "success");
             signupForm.reset();
         }
     };
 
-    // منطق تسجيل الدخول
     loginForm.onsubmit = (e) => {
         e.preventDefault();
-        const phone = document.getElementById('loginPhone').value;
+        const fullPhone = document.getElementById('loginCountryCode').value + document.getElementById('loginPhone').value;
         const pass = document.getElementById('loginPassword').value;
 
         let users = JSON.parse(localStorage.getItem('burnup_users')) || [];
-        const user = users.find(u => u.phone === phone && u.password === pass);
+        const user = users.find(u => u.phone === fullPhone && u.password === pass);
 
         if (user) {
             displayMessage(`أهلاً بك يا ${user.firstName}، جاري توجيهك...`, "success");
         } else {
-            displayMessage("بيانات الدخول غير صحيحة، تأكد من الرقم وكلمة السر.", "error");
+            displayMessage("بيانات الدخول غير صحيحة.", "error");
         }
     };
 </script>
