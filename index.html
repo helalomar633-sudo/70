@@ -1,0 +1,132 @@
+import React, { useState } from 'react';
+
+const FitnessApp = () => {
+  const [formData, setFormData] = useState({
+    weight: '',
+    height: '',
+    age: '',
+    gender: 'male',
+    goal: 'maintain', // lose, gain, maintain
+    level: 'beginner',
+    location: 'gym'
+  });
+
+  const [result, setResult] = useState(null);
+
+  const calculateCalories = (e) => {
+    e.preventDefault();
+    
+    // معادلة Mifflin-St Jeor الأساسية
+    let bmr;
+    if (formData.gender === 'male') {
+      bmr = 10 * formData.weight + 6.25 * formData.height - 5 * formData.age + 5;
+    } else {
+      bmr = 10 * formData.weight + 6.25 * formData.height - 5 * formData.age - 161;
+    }
+
+    // تقدير السعرات بناءً على الهدف (تبسيط)
+    let dailyCalories = Math.round(bmr * 1.5); // معامل نشاط متوسط
+    if (formData.goal === 'lose') dailyCalories -= 500;
+    if (formData.goal === 'gain') dailyCalories += 500;
+
+    setResult(dailyCalories);
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white font-sans p-6">
+      {/* Header */}
+      <header className="max-w-4xl mx-auto flex justify-between items-center mb-12">
+        <h1 className="text-3xl font-bold tracking-tighter italic">
+          OM<span className="text-lime-400">ZONE</span> FITNESS AI
+        </h1>
+        <div className="h-1 w-20 bg-lime-400"></div>
+      </header>
+
+      <main className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+        {/* Form Section */}
+        <section className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800 shadow-2xl">
+          <h2 className="text-xl font-semibold mb-6 border-r-4 border-lime-400 pr-4">بيانات الجسم</h2>
+          <form onSubmit={calculateCalories} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <input 
+                type="number" placeholder="الوزن (كجم)" 
+                className="bg-black border border-zinc-700 p-3 rounded-lg focus:border-lime-400 outline-none transition"
+                onChange={(e) => setFormData({...formData, weight: e.target.value})}
+              />
+              <input 
+                type="number" placeholder="الطول (سم)" 
+                className="bg-black border border-zinc-700 p-3 rounded-lg focus:border-lime-400 outline-none transition"
+                onChange={(e) => setFormData({...formData, height: e.target.value})}
+              />
+            </div>
+            
+            <select className="w-full bg-black border border-zinc-700 p-3 rounded-lg appearance-none">
+              <option value="beginner">مستوى المبتدئ</option>
+              <option value="intermediate">مستوى متوسط</option>
+              <option value="pro">مستوى محترف</option>
+            </select>
+
+            <select className="w-full bg-black border border-zinc-700 p-3 rounded-lg">
+              <option value="gym">التمرين في الجيم</option>
+              <option value="home">التمرين في المنزل</option>
+            </select>
+
+            <button className="w-full bg-lime-400 text-black font-bold py-4 rounded-lg hover:bg-lime-500 transition-all uppercase tracking-widest">
+              تحليل البيانات بالذكاء الاصطناعي
+            </button>
+          </form>
+        </section>
+
+        {/* Results Section */}
+        <section className="flex flex-col justify-center">
+          {!result ? (
+            <div className="text-zinc-500 text-center border-2 border-dashed border-zinc-800 p-12 rounded-2xl">
+              أدخل بياناتك للحصول على الخطة التدريبية المخصصة لك
+            </div>
+          ) : (
+            <div className="space-y-6 animate-pulse">
+              <div className="bg-zinc-900 p-6 rounded-2xl border-l-4 border-lime-400">
+                <p className="text-zinc-400 text-sm">احتياجك اليومي من السعرات</p>
+                <h3 className="text-5xl font-black text-lime-400">{result} <span className="text-lg text-white">سعرة</span></h3>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <div className="bg-zinc-900 p-4 rounded-xl text-center">
+                  <span className="block text-xs text-zinc-400">بروتين</span>
+                  <span className="font-bold">180g</span>
+                </div>
+                <div className="bg-zinc-900 p-4 rounded-xl text-center">
+                  <span className="block text-xs text-zinc-400">كارب</span>
+                  <span className="font-bold">250g</span>
+                </div>
+                <div className="bg-zinc-900 p-4 rounded-xl text-center">
+                  <span className="block text-xs text-zinc-400">دهون</span>
+                  <span className="font-bold">70g</span>
+                </div>
+              </div>
+
+              <div className="bg-zinc-900 p-6 rounded-2xl border border-zinc-800">
+                <h4 className="font-bold mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-lime-400 rounded-full ml-2"></span>
+                  جدول التمرين المقترح
+                </h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-2 bg-black rounded border border-zinc-800">
+                    <span>Chest Press (Video)</span>
+                    <button className="text-lime-400 text-xs">مشاهدة</button>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-black rounded border border-zinc-800">
+                    <span>Squats High Intensity</span>
+                    <button className="text-lime-400 text-xs">مشاهدة</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export default FitnessApp;
