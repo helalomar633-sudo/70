@@ -3,109 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FitAI | مدربك الذكي</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>BurnUp - Fitness Station</title>
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; color: white; }
-        .orange-gradient { background: linear-gradient(90deg, #f97316 0%, #ea580c 100%); }
-        .card-dark { background-color: #1e293b; border: 1px solid #334155; }
+        :root {
+            --dark-blue: #0a192f;
+            --bright-orange: #ff6b00;
+            --text-white: #e6f1ff;
+            --soft-blue: #112240;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-blue);
+            color: var(--text-white);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--soft-blue);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            border-top: 5px solid var(--bright-orange);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--bright-orange);
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #233554;
+            background-color: var(--dark-blue);
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--bright-orange);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bright-orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: #e65c00;
+            transform: translateY(-2px);
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .toggle-link span {
+            color: var(--bright-orange);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        #userPanel {
+            text-align: center;
+            display: none;
+        }
+
+        .success-msg {
+            background: #1d3331;
+            color: #4ade80;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <nav class="p-6 flex justify-between items-center border-b border-gray-800">
-        <div class="text-2xl font-bold text-orange-500">Fit<span class="text-white">AI</span></div>
-        <ul class="flex gap-6">
-            <li><a href="#" class="hover:text-orange-500">الرئيسية</a></li>
-            <li><a href="#generator" class="hover:text-orange-500">خطة التمرين</a></li>
-            <li><a href="#calculator" class="hover:text-orange-500">حاسبة السعرات</a></li>
-        </ul>
-    </nav>
+    <div class="container">
+        <h1>BurnUp</h1>
+        
+        <div id="msgBox" class="success-msg"></div>
 
-    <header class="py-20 text-center px-4">
-        <h1 class="text-5xl font-bold mb-6">حول جسمك بذكاء <span class="text-orange-500">اصطناعي</span></h1>
-        <p class="text-gray-400 max-w-2xl mx-auto mb-8">نظام غذائي وتمارين مصممة خصيصاً لك بناءً على بياناتك الجسدية وأهدافك.</p>
-        <a href="#generator" class="orange-gradient px-8 py-3 rounded-full font-bold hover:scale-105 transition">ابدأ الآن مجاناً</a>
-    </header>
+        <div id="registerSection" class="form-section active">
+            <div class="grid">
+                <div class="input-group">
+                    <label>الاسم الأول</label>
+                    <input type="text" id="fname" placeholder="أحمد">
+                </div>
+                <div class="input-group">
+                    <label>الاسم الأخير</label>
+                    <input type="text" id="lname" placeholder="علي">
+                </div>
+            </div>
 
-    <section id="generator" class="max-w-4xl mx-auto p-8 card-dark rounded-2xl mb-20 shadow-2xl">
-        <h2 class="text-2xl font-bold mb-8 border-r-4 border-orange-500 pr-4">منشئ الخطة الذكية</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block mb-2 text-sm">الطول (سم)</label>
-                <input type="number" id="height" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg focus:outline-none focus:border-orange-500" placeholder="مثال: 175">
+            <div class="input-group">
+                <label>رقم الهاتف</label>
+                <input type="tel" id="regPhone" placeholder="01xxxxxxxxx">
             </div>
-            <div>
-                <label class="block mb-2 text-sm">الوزن (كجم)</label>
-                <input type="number" id="weight" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg focus:outline-none focus:border-orange-500" placeholder="مثال: 70">
+
+            <div class="input-group">
+                <label>مكان التمرين</label>
+                <select id="location">
+                    <option value="gym">الجيم (Gym)</option>
+                    <option value="home">المنزل</option>
+                </select>
             </div>
-            <div>
-                <label class="block mb-2 text-sm">مستوى النشاط</label>
-                <select id="level" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg focus:outline-none">
+
+            <div class="input-group">
+                <label>مستوى التقدم</label>
+                <select id="level">
                     <option value="beginner">مبتدئ</option>
                     <option value="intermediate">متوسط</option>
                     <option value="advanced">متقدم</option>
                 </select>
             </div>
-            <div>
-                <label class="block mb-2 text-sm">مكان التمرين</label>
-                <select id="place" class="w-full bg-gray-900 border border-gray-700 p-3 rounded-lg focus:outline-none">
-                    <option value="gym">الجيم (صالة الألعاب)</option>
-                    <option value="home">المنزل</option>
-                </select>
-            </div>
-        </div>
-        <button onclick="generatePlan()" class="w-full mt-8 orange-gradient py-4 rounded-xl font-bold text-lg">توليد الخطة بالذكاء الاصطناعي</button>
-    </section>
 
-    <section id="calculator" class="max-w-4xl mx-auto p-8 card-dark rounded-2xl mb-20">
-        <h2 class="text-2xl font-bold mb-6 text-orange-500">حاسبة السعرات الحرارية</h2>
-        <p class="mb-4 text-gray-300">أدخل بياناتك لمعرفة السعرات اللازمة للمحافظة على وزنك:</p>
-        <div id="calc-result" class="text-center p-6 bg-gray-900 rounded-lg hidden">
-            <span class="text-gray-400">تحتاج يومياً إلى:</span>
-            <div id="calories-num" class="text-4xl font-bold text-orange-500 my-2">0</div>
-            <span class="text-gray-400">سعرة حرارية</span>
-        </div>
-    </section>
-
-    <section id="results" class="max-w-6xl mx-auto px-4 pb-20 hidden">
-        <h2 class="text-3xl font-bold mb-10">تمارينك المقترحة</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="card-dark overflow-hidden rounded-xl group">
-                <div class="relative">
-                    <img src="https://via.placeholder.com/400x250/222/f97316?text=Exercise+Video" alt="تمرين" class="w-full h-48 object-cover">
-                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                        <span class="bg-orange-500 p-2 rounded-full">▶ تشغيل الفيديو</span>
-                    </div>
+            <div class="grid">
+                <div class="input-group">
+                    <label>الطول (سم)</label>
+                    <input type="number" id="height" placeholder="180">
                 </div>
-                <div class="p-5">
-                    <h3 class="font-bold text-xl mb-2">تمرين الضغط (Push Ups)</h3>
-                    <p class="text-gray-400 text-sm">3 مجموعات × 12 تكرار</p>
+                <div class="input-group">
+                    <label>الوزن (كجم)</label>
+                    <input type="number" id="weight" placeholder="80">
                 </div>
             </div>
+
+            <div class="input-group">
+                <label>كلمة السر</label>
+                <input type="password" id="regPass">
+            </div>
+
+            <button onclick="register()">إنشاء حساب</button>
+            <div class="toggle-link">لديك حساب بالفعل؟ <span onclick="showLogin()">تسجيل الدخول</span></div>
         </div>
-    </section>
+
+        <div id="loginSection" class="form-section">
+            <div class="input-group">
+                <label>رقم الهاتف</label>
+                <input type="tel" id="loginPhone" placeholder="01xxxxxxxxx">
+            </div>
+            <div class="input-group">
+                <label>كلمة السر</label>
+                <input type="password" id="loginPass">
+            </div>
+            <button onclick="login()">دخول</button>
+            <div class="toggle-link">ليس لديك حساب؟ <span onclick="showRegister()">إنشاء حساب جديد</span></div>
+        </div>
+
+        <div id="userPanel" class="form-section">
+            <h2 id="welcomeMsg"></h2>
+            <p>مرحباً بك في رحلة التغيير الخاصة بك.</p>
+            <button onclick="location.reload()" style="background: #233554;">تسجيل الخروج</button>
+        </div>
+    </div>
 
     <script>
-        function generatePlan() {
-            const h = document.getElementById('height').value;
-            const w = document.getElementById('weight').value;
-            
-            if(!h || !w) {
-                alert("برجاء إدخال البيانات كاملة");
-                return;
-            }
+        // محاكاة قاعدة بيانات بسيطة في المتصفح
+        let db = JSON.parse(localStorage.getItem('users')) || [];
 
-            // حاسبة بسيطة للسعرات (BMR - Mifflin-St Jeor)
-            // هذه معادلة تقريبية للمثال فقط
-            const calories = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5); 
-            
-            document.getElementById('calc-result').classList.remove('hidden');
-            document.getElementById('calories-num').innerText = calories;
-            document.getElementById('results').classList.remove('hidden');
-            
-            window.scrollTo({ top: document.getElementById('calc-result').offsetTop - 50, behavior: 'smooth' });
+        function showLogin() {
+            document.getElementById('registerSection').classList.remove('active');
+            document.getElementById('loginSection').classList.add('active');
+        }
+
+        function showRegister() {
+            document.getElementById('loginSection').classList.remove('active');
+            document.getElementById('registerSection').classList.add('active');
+        }
+
+        function register() {
+            const user = {
+                fname: document.getElementById('fname').value,
+                lname: document.getElementById('lname').value,
+                phone: document.getElementById('regPhone').value,
+                pass: document.getElementById('regPass').value
+            };
+
+            if(user.fname && user.phone && user.pass) {
+                db.push(user);
+                localStorage.setItem('users', JSON.stringify(db));
+                
+                const msg = document.getElementById('msgBox');
+                msg.innerText = "لقد تم حفظ بياناتك بنجاح!";
+                msg.style.display = "block";
+                
+                setTimeout(() => {
+                    msg.style.display = "none";
+                    showLogin();
+                }, 2000);
+            } else {
+                alert("يرجى ملء البيانات الأساسية");
+            }
+        }
+
+        function login() {
+            const phone = document.getElementById('loginPhone').value;
+            const pass = document.getElementById('loginPass').value;
+
+            const foundUser = db.find(u => u.phone === phone && u.pass === pass);
+
+            if(foundUser) {
+                const msg = document.getElementById('msgBox');
+                msg.innerText = "لقد تم تسجيل الدخول بهذا الحساب";
+                msg.style.display = "block";
+
+                setTimeout(() => {
+                    msg.style.display = "none";
+                    document.getElementById('loginSection').classList.remove('active');
+                    document.getElementById('userPanel').classList.add('active');
+                    document.getElementById('welcomeMsg').innerText = "كابتن " + foundUser.fname;
+                }, 1500);
+            } else {
+                alert("خطأ في رقم الهاتف أو كلمة السر");
+            }
         }
     </script>
 </body>
