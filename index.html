@@ -249,139 +249,88 @@
 </div>
 
 <script>
-    // --- بيانات الربط بالسيرفر (بياناتك الحقيقية) ---
-const MASTER_KEY = '$2a$10$hVA0qb10UC6Z9JfH3BjeJ.WbjKftYLv8dssNULT3FVVr7RducwRv.'; 
-const BIN_ID = '69ea7491aaba8821972ea77d'; 
-const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-const signupForm = document.getElementById('signupForm');
-const loginForm = document.getElementById('loginForm');
-const msgDiv = document.getElementById('msg');
-
-// وظائف مساعدة للواجهة
-function togglePass(id) {
-    const input = document.getElementById(id);
-    const btn = input.nextElementSibling;
-    if (input.type === "password") {
-        input.type = "text";
-        btn.innerText = "إخفاء";
-    } else {
-        input.type = "password";
-        btn.innerText = "عرض";
-    }
-}
-
-function showLogin() {
-    signupForm.classList.add('hidden');
-    loginForm.classList.remove('hidden');
-    document.getElementById('toggleLogin').classList.add('active');
-    document.getElementById('toggleSignup').classList.remove('active');
-    hideMsg();
-}
-
-function showSignup() {
-    loginForm.classList.add('hidden');
-    signupForm.classList.remove('hidden');
-    document.getElementById('toggleSignup').classList.add('active');
-    document.getElementById('toggleLogin').classList.remove('active');
-    hideMsg();
-}
-
-function hideMsg() {
-    msgDiv.style.display = 'none';
-}
-
-function displayMessage(text, type) {
-    msgDiv.innerText = text;
-    msgDiv.style.display = 'block';
-    msgDiv.className = 'message ' + (type === 'error' ? 'msg-error' : 'msg-success');
-}
-
-// --- وظائف التعامل مع السيرفر ---
-
-async function fetchUsersFromServer() {
-    try {
-        const response = await fetch(API_URL, {
-            headers: { 'X-Master-Key': MASTER_KEY }
-        });
-        const data = await response.json();
-        return data.record.users || [];
-    } catch (error) {
-        console.error("خطأ في جلب البيانات:", error);
-        return [];
-    }
-}
-
-async function updateUsersOnServer(updatedUsers) {
-    try {
-        await fetch(API_URL, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': MASTER_KEY
-            },
-            body: JSON.stringify({ users: updatedUsers })
-        });
-        return true;
-    } catch (error) {
-        console.error("خطأ في تحديث البيانات:", error);
-        return false;
-    }
-}
-
-// --- أحداث الفورم ---
-
-signupForm.onsubmit = async (e) => {
-    e.preventDefault();
-    displayMessage("جاري التحقق من قواعد البيانات...", "success");
-
-    const users = await fetchUsersFromServer();
-    const countryCode = document.getElementById('countryCode').value;
-    const phoneNumber = document.getElementById('phone').value;
-    const fullPhone = countryCode + phoneNumber;
-    const password = document.getElementById('password').value;
-
-    // التحقق من الرقم (سيرفر)
-    if (users.some(u => u.phone === fullPhone)) {
-        displayMessage("هذا الرقم مسجل مسبقاً في BurnUp!", "error");
-        return;
-    }
-
-    // إضافة مستخدم جديد للسيرفر
-    const newUser = {
-        firstName: document.getElementById('firstName').value,
-        phone: fullPhone,
-        password: password
+<script>
+    // إعدادات مشروعك BurnUp من الصورة
+    const firebaseConfig = {
+        apiKey: "AIzaSyBuArEPqytd-MBvtYPbg rnlAIZdbhcqmGg",
+        authDomain: "burnup-832f1.firebaseapp.com",
+        projectId: "burnup-832f1",
+        storageBucket: "burnup-832f1.appspot.com",
+        messagingSenderId: "936443662340",
+        appId: "1:936443662340:web:9bfa9933f3041bebda6551",
+        measurementId: "G-WCYMGBQJ98"
     };
 
-    users.push(newUser);
-    const success = await updateUsersOnServer(users);
+    // تهيئة Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    if (success) {
-        displayMessage("تم إنشاء الحساب بنجاح سحابياً!", "success");
-        setTimeout(showLogin, 1500);
-    } else {
-        displayMessage("حدث خطأ أثناء حفظ البيانات", "error");
+    // --- الدوال الأساسية للواجهة ---
+    const signupForm = document.getElementById('signupForm');
+    const loginForm = document.getElementById('loginForm');
+    const msgDiv = document.getElementById('msg');
+
+    function displayMessage(text, type) {
+        msgDiv.innerText = text;
+        msgDiv.style.display = 'block';
+        msgDiv.className = 'message ' + (type === 'error' ? 'msg-error' : 'msg-success');
     }
-};
 
-loginForm.onsubmit = async (e) => {
-    e.preventDefault();
-    displayMessage("جاري الدخول...", "success");
+    // --- منطق إنشاء الحساب (Signup) ---
+    signupForm.onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const phone = document.getElementById('phone').value;
+        const email = phone + "@burnup.com"; // تحويل الهاتف لإيميل وهمي
+        const password = document.getElementById('password').value;
+        
+        try {
+            // 1. إنشاء الحساب في نظام الحماية
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
 
-    const users = await fetchUsersFromServer();
-    const fullPhone = document.getElementById('loginCountryCode').value + document.getElementById('loginPhone').value;
-    const pass = document.getElementById('loginPassword').value;
+            // 2. حفظ البيانات الشخصية في قاعدة البيانات السحابية
+            await db.collection("users").doc(user.uid).set({
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                height: document.getElementById('height').value,
+                weight: document.getElementById('weight').value,
+                level: document.getElementById('level').value,
+                location: document.getElementById('location').value,
+                phone: phone,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
 
-    const user = users.find(u => u.phone === fullPhone && u.password === pass);
+            displayMessage("تم إنشاء حسابك السحابي بنجاح! جاري التحويل...", "success");
+            setTimeout(() => { location.reload(); }, 2000); 
 
-    if (user) {
-        displayMessage(`أهلاً بك يا ${user.firstName} في رحلة التغيير!`, "success");
-        // هنا يمكنك توجيه المستخدم لصفحة التمرين
-    } else {
-        displayMessage("رقم الهاتف أو كلمة السر غير صحيحة", "error");
-    }
-};
+        } catch (error) {
+            let errorMsg = "حدث خطأ أثناء التسجيل";
+            if (error.code === 'auth/email-already-in-use') errorMsg = "هذا الرقم مسجل بالفعل!";
+            displayMessage(errorMsg, "error");
+        }
+    };
+
+    // --- منطق تسجيل الدخول (Login) ---
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const phone = document.getElementById('loginPhone').value;
+        const email = phone + "@burnup.com";
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            await auth.signInWithEmailAndPassword(email, password);
+            displayMessage("تم تسجيل الدخول بنجاح! أهلاً بك في BurnUp", "success");
+            // هنا يمكنك توجيه المستخدم لصفحة التمارين
+        } catch (error) {
+            displayMessage("خطأ في الرقم أو كلمة السر", "error");
+        }
+    };
 </script>
 </body>
 </html>
