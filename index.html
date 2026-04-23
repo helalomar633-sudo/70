@@ -291,23 +291,55 @@
         msgDiv.className = 'message ' + (type === 'error' ? 'msg-error' : 'msg-success');
     }
 
+    // وظيفة للتحقق من صحة كلمة السر
+    function isPasswordValid(pass) {
+        const letters = pass.match(/[a-zA-Z]/g); // البحث عن حروف
+        return pass.length >= 8 && letters && letters.length >= 2;
+    }
+
+    // وظيفة للتحقق من طول رقم الهاتف حسب الدولة
+    function isPhoneValid(phone, countryCode) {
+        if (countryCode === "+20") return phone.length === 11; // مصر
+        if (countryCode === "+966") return phone.length === 9 || phone.length === 10; // السعودية
+        if (countryCode === "+971") return phone.length === 9; // الإمارات
+        return phone.length > 8;
+    }
+
     signupForm.onsubmit = (e) => {
         e.preventDefault();
-        const fullPhone = document.getElementById('countryCode').value + document.getElementById('phone').value;
+        
+        const countryCode = document.getElementById('countryCode').value;
+        const phoneNumber = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+        const fullPhone = countryCode + phoneNumber;
+
+        // 1. التحقق من طول الرقم
+        if (!isPhoneValid(phoneNumber, countryCode)) {
+            displayMessage("رقم الهاتف غير صحيح لهذه الدولة", "error");
+            return;
+        }
+
+        // 2. التحقق من قوة كلمة السر
+        if (!isPasswordValid(password)) {
+            displayMessage("كلمة السر يجب أن تكون 8 رموز وتتضمن حرفين على الأقل", "error");
+            return;
+        }
+
         let users = JSON.parse(localStorage.getItem('burnup_users')) || [];
         
+        // 3. التحقق من التكرار (ملاحظة: هذا يعمل على نفس المتصفح فقط)
         if (users.some(user => user.phone === fullPhone)) {
-            displayMessage("عذراً، هذا الرقم مسجل من قبل!", "error");
+            displayMessage("عذراً، هذا الرقم مسجل به من قبل!", "error");
         } else {
             const newUser = {
                 firstName: document.getElementById('firstName').value,
                 phone: fullPhone,
-                password: document.getElementById('password').value
+                password: password
             };
             users.push(newUser);
             localStorage.setItem('burnup_users', JSON.stringify(users));
-            displayMessage("تم إنشاء الحساب! يمكنك الدخول الآن.", "success");
-            setTimeout(showLogin, 1500); // تحويل المستخدم لصفحة الدخول بعد نجاح التسجيل
+            displayMessage("تم إنشاء الحساب بنجاح!", "success");
+            setTimeout(showLogin, 1500);
         }
     };
 
@@ -320,9 +352,8 @@
 
         if (user) {
             displayMessage(`أهلاً بك يا ${user.firstName}، جاري توجيهك...`, "success");
-            // هنا يمكنك إضافة window.location.href لصفحة المستخدم
         } else {
-            displayMessage("بيانات الدخول غير صحيحة.", "error");
+            displayMessage("رقم الهاتف أو كلمة السر غير صحيحة", "error");
         }
     };
 </script>
